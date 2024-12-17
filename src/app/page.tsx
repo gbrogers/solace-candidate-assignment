@@ -1,91 +1,73 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useAdvocates } from "./hooks/search";
+import { Filters, SearchResults } from "./components/Search/SearchTable";
 
 export default function Home() {
-  const [advocates, setAdvocates] = useState([]);
-  const [filteredAdvocates, setFilteredAdvocates] = useState([]);
+  const [query, setQuery] = useState<string>("");
+  const [filterValue, setFilterValue] = useState<string | null>(null);
+  const [sort, setSort] = useState<{
+    column: "years";
+    direction: "asc" | "desc";
+  } | null>(null);
 
-  useEffect(() => {
-    console.log("fetching advocates...");
-    fetch("/api/advocates").then((response) => {
-      response.json().then((jsonResponse) => {
-        setAdvocates(jsonResponse.data);
-        setFilteredAdvocates(jsonResponse.data);
-      });
-    });
-  }, []);
+  const advocateData = useAdvocates({
+    query,
+    sort,
+    filter: filterValue ? { field: "specialty", value: filterValue } : null,
+  });
 
-  const onChange = (e) => {
-    const searchTerm = e.target.value;
-
-    document.getElementById("search-term").innerHTML = searchTerm;
-
-    console.log("filtering advocates...");
-    const filteredAdvocates = advocates.filter((advocate) => {
-      return (
-        advocate.firstName.includes(searchTerm) ||
-        advocate.lastName.includes(searchTerm) ||
-        advocate.city.includes(searchTerm) ||
-        advocate.degree.includes(searchTerm) ||
-        advocate.specialties.includes(searchTerm) ||
-        advocate.yearsOfExperience.includes(searchTerm)
-      );
-    });
-
-    setFilteredAdvocates(filteredAdvocates);
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
   };
 
-  const onClick = () => {
-    console.log(advocates);
-    setFilteredAdvocates(advocates);
+  const handleSort = (column: string) => {
+    if (column === "years") {
+      setSort((prev) => ({
+        column,
+        direction:
+          prev?.column === column && prev?.direction === "asc" ? "desc" : "asc",
+      }));
+    }
+  };
+
+  const handleFilter = (value: string) => {
+    setFilterValue(value);
   };
 
   return (
-    <main style={{ margin: "24px" }}>
-      <h1>Solace Advocates</h1>
-      <br />
-      <br />
-      <div>
-        <p>Search</p>
-        <p>
-          Searching for: <span id="search-term"></span>
-        </p>
-        <input style={{ border: "1px solid black" }} onChange={onChange} />
-        <button onClick={onClick}>Reset Search</button>
+    <main>
+      <div className="bg-[#1d4339] p-6">
+        <h1 className="text-white font-thin  text-3xl">Solace Advocates</h1>
       </div>
-      <br />
-      <br />
-      <table>
-        <thead>
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>City</th>
-          <th>Degree</th>
-          <th>Specialties</th>
-          <th>Years of Experience</th>
-          <th>Phone Number</th>
-        </thead>
-        <tbody>
-          {filteredAdvocates.map((advocate) => {
-            return (
-              <tr>
-                <td>{advocate.firstName}</td>
-                <td>{advocate.lastName}</td>
-                <td>{advocate.city}</td>
-                <td>{advocate.degree}</td>
-                <td>
-                  {advocate.specialties.map((s) => (
-                    <div>{s}</div>
-                  ))}
-                </td>
-                <td>{advocate.yearsOfExperience}</td>
-                <td>{advocate.phoneNumber}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+      <div className=" p-12">
+        <br />
+        <h2 className="text-[#1d4339] font-bold text-xl">
+          Find Your Patient Advocate Today
+        </h2>
+        <br />
+        <input
+          type="text"
+          placeholder="Search..."
+          className="border border-gray-300 p-2 rounded w-full"
+          value={query}
+          onChange={handleSearch}
+        />
+        <br />
+        <br />
+        <Filters
+          advocateResults={advocateData}
+          handleFilter={handleFilter}
+          filterValue={filterValue}
+        />
+        <br />
+        <SearchResults
+          advocateResults={advocateData}
+          handleSort={handleSort}
+          sort={sort}
+        />
+      </div>
     </main>
   );
 }
