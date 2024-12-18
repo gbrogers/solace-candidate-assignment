@@ -56,8 +56,7 @@ const AdvocateSearch: React.FC = () => {
       </div>
       <SearchResults
         advocateResults={advocateData}
-        handleSort={handleSort}
-        sort={sort}
+       
       />
     </div>
   );

@@ -69,12 +69,8 @@ const ResultCard: React.FC<{
 
 const SearchResults: React.FC<{
   advocateResults: UseQueryResult<Advocate[], Error>;
-  handleSort: (column: string) => void;
-  sort: {
-    column: "years";
-    direction: "asc" | "desc";
-  } | null;
-}> = ({ advocateResults, handleSort, sort }) => {
+
+}> = ({ advocateResults }) => {
   if (advocateResults.isLoading) {
     return <div>Loading...</div>;
   }
@@ -83,7 +79,7 @@ const SearchResults: React.FC<{
     return <div>{advocateResults.error.message ?? "Error :("}</div>;
   }
   if (!advocateResults.data?.length) {
-    return <div>No Results matching your search</div>;
+    return <div>No results matching your search</div>;
   }
 
   return (
