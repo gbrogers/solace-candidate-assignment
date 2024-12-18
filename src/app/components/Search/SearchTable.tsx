@@ -25,38 +25,46 @@ const createDashedPhoneNumber = (phoneNumber: number) => {
   );
 };
 
-const NameCell: React.FC<{ advocate: Advocate }> = ({ advocate }) => {
+const AdvocateInfo: React.FC<{ advocate: Advocate }> = ({ advocate }) => {
   // TODO: check the presence of all 3 pieces before constructing. Though api says not null.
   return (
-    <td className="border border-slate-600 p-12">
+    <div className="p-12 w-1/4">
       <p
         className={"font-bold text-[#1d4339]"}
       >{`${advocate.firstName} ${advocate.lastName}, ${advocate.degree}`}</p>
       <p className="text-sm">{advocate.city}</p>
       <p className="text-sm">{createDashedPhoneNumber(advocate.phoneNumber)}</p>
-    </td>
+      <p className="text-xs text-gray-600 italic">
+        <br />
+        <b>{advocate.yearsOfExperience}</b> Years of Experience
+      </p>
+    </div>
   );
 };
 
-const SpecialtiesCell: React.FC<{ advocate: Advocate }> = ({ advocate }) => {
+const SpecialtiesList: React.FC<{ advocate: Advocate }> = ({ advocate }) => {
   return (
-    <td className="border border-slate-600 p-12">
-      <ul className="list-disc">
+    <div className="p-12">
+      <p className="text-sm text-gray-700">Specialties</p>
+      <ul className="list-disc pl-4">
         {advocate.specialties.sort().map((x) => (
           <li className="text-sm" key={x}>
             {x}
           </li>
         ))}
       </ul>
-    </td>
+    </div>
   );
 };
 
-const ExperienceCell: React.FC<{ advocate: Advocate }> = ({ advocate }) => {
+const ResultCard: React.FC<{
+  advocate: Advocate;
+}> = ({ advocate }) => {
   return (
-    <td className="border border-slate-600 p-12">
-      {advocate.yearsOfExperience}
-    </td>
+    <div className="shadow-md rounded-xl  border border-slate-600 w-full flex flex-row">
+      <AdvocateInfo advocate={advocate} />
+      <SpecialtiesList advocate={advocate} />
+    </div>
   );
 };
 
@@ -67,7 +75,7 @@ const SearchResults: React.FC<{
     column: "years";
     direction: "asc" | "desc";
   } | null;
-}> = ({ advocateResults, handleSort, sort }) => {
+}> = ({ advocateResults, handleSort, sort }) => { //TODO: bring back in sort
   if (advocateResults.isLoading) {
     return <div>Loading...</div>;
   }
@@ -81,42 +89,13 @@ const SearchResults: React.FC<{
 
   return (
     <div>
-      <p className="text-sm">{`${advocateResults.data.length} Results`}</p>
-      <table className="w-full">
-        <thead>
-          <tr>
-            <th className="border border-slate-600 p-6 font-bold">Name</th>
-            <th className="border border-slate-600 p-6 font-bold">
-              <button onClick={() => handleSort("years")}>
-                {/* TODO: clean up this for readability */}
-                {`Years of Experience${
-                  !!sort
-                    ? sort.column === "years"
-                      ? sort.direction === "desc"
-                        ? " v"
-                        : " ^"
-                      : ""
-                    : ""
-                }`}
-              </button>
-            </th>
-            <th className="border border-slate-600 p-6 font-bold">
-              Specialties
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {advocateResults.data.map((advocate) => {
-            return (
-              <tr key={advocate.phoneNumber}>
-                <NameCell advocate={advocate} />
-                <ExperienceCell advocate={advocate} />
-                <SpecialtiesCell advocate={advocate} />
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+      <p className="text-sm pb-2">{`${advocateResults.data.length} Results`}</p>
+      {/* <div className="flex flex-wrap justify-center mx-8 gap-y-20 gap-x-8"> */}
+      <div className="flex flex-col ... gap-4">
+        {advocateResults.data.map((advocate) => (
+          <ResultCard key={advocate.id} advocate={advocate} />
+        ))}
+      </div>
     </div>
   );
 };

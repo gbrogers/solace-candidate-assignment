@@ -41,12 +41,11 @@ export default function Home() {
       <div className="bg-[#1d4339] p-6">
         <h1 className="text-white font-thin  text-3xl">Solace Advocates</h1>
       </div>
-      <div className=" p-12">
-        <br />
+      <div className="flex flex-col gap-y-8 p-12">
         <h2 className="text-[#1d4339] font-bold text-xl">
           Find Your Patient Advocate Today
         </h2>
-        <br />
+        <div className="flex flex-col gap-y-4">
         <input
           type="text"
           placeholder="Search..."
@@ -54,19 +53,19 @@ export default function Home() {
           value={query}
           onChange={handleSearch}
         />
-        <br />
-        <br />
+             
         <Filters
           advocateResults={advocateData}
           handleFilter={handleFilter}
           filterValue={filterValue}
         />
-        <br />
+        </div>
         <SearchResults
           advocateResults={advocateData}
           handleSort={handleSort}
           sort={sort}
         />
+     
       </div>
     </main>
   );
