@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { UseQueryResult } from "@tanstack/react-query";
 
 interface Advocate {
@@ -75,7 +74,7 @@ const SearchResults: React.FC<{
     column: "years";
     direction: "asc" | "desc";
   } | null;
-}> = ({ advocateResults, handleSort, sort }) => { //TODO: bring back in sort
+}> = ({ advocateResults, handleSort, sort }) => {
   if (advocateResults.isLoading) {
     return <div>Loading...</div>;
   }
@@ -90,7 +89,6 @@ const SearchResults: React.FC<{
   return (
     <div>
       <p className="text-sm pb-2">{`${advocateResults.data.length} Results`}</p>
-      {/* <div className="flex flex-wrap justify-center mx-8 gap-y-20 gap-x-8"> */}
       <div className="flex flex-col ... gap-4">
         {advocateResults.data.map((advocate) => (
           <ResultCard key={advocate.id} advocate={advocate} />
@@ -99,55 +97,6 @@ const SearchResults: React.FC<{
     </div>
   );
 };
-const Filters: React.FC<{
-  advocateResults: UseQueryResult<Advocate[], Error>;
-  handleFilter: (value: string) => void;
-  filterValue: string | null;
-}> = ({ advocateResults, handleFilter, filterValue }) => {
-  const allSpecialties = useMemo(() => {
-    //To avoid null results, we only use the available specialties in current search result.
-    //Would need to talk to customers if better to have full list at all times.
-    if (!advocateResults.isLoading && filterValue !== "none") {
-      return Array.from(
-        new Set(
-          advocateResults.data
-            ?.flatMap((advocate) => advocate?.specialties)
-            .sort()
-        )
-      );
-    } else {
-      return [filterValue];
-    }
-  }, [advocateResults.data, advocateResults.isLoading, filterValue]);
 
-  return (
-    <div>
-      <label htmlFor="specialty">Filter by Specialty: </label>
-      <select
-        name="specialty"
-        id="specialty"
-        className="border border-gray-300 p-2 rounded"
-        value={filterValue ?? ""}
-        onChange={(e) => {
-          const selectedValue =
-            e.target.value === "none" ? null : e.target.value;
-          handleFilter(selectedValue ?? "");
-        }}
-      >
-        <option value="none">None</option>
-        {allSpecialties.map((specialty) => (
-          <option
-            key={specialty}
-            value={specialty ?? "unknown"}
-            id={specialty ?? "unknown"}
-          >
-            {specialty}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
-};
-
-export { SearchResults, Filters };
+export { SearchResults };
 export type { Advocate };
