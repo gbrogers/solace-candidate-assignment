@@ -23,7 +23,7 @@ export async function GET(request: Request) {
     finalQuery = finalQuery.where(
       or(
         ilike(schema.advocates.firstName, `%${searchTerm}%`),
-        ilike(schema.advocates.firstName, `%${searchTerm}%`),
+        ilike(schema.advocates.lastName, `%${searchTerm}%`),
         ilike(schema.advocates.degree, `%${searchTerm}%`),
       ),  
     );
