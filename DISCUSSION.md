@@ -23,7 +23,7 @@ This document outlines the next steps I would take given more time to enhance th
     There are a number of improvements I would like here, starting with how the refinement controls are laid out. They work for the limited sort and filter options, but as they expand I would need to find a better solution. Filter UI is rather straight forward on a list like this, but sort is a bit more tricky. I'd want to do some more research and consult with others.
 
 5. **A lot of code polishing, generally**
-    Code gets the job done but wouldn't say it is beautiful yet.
+    Code gets the job done but wouldn't say it is beautiful yet. Styling is duplicative still and not abstracted to an acceptible level in my opionion.
 
 ---
 
