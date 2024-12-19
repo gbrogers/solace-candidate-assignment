@@ -1,7 +1,7 @@
 import { SearchResults } from "./SearchTable";
 import { useAdvocates } from "@/app/hooks/search";
 import { useState } from "react";
-import { Filters, Sort } from "./SearchRefinements";
+import { Refinements } from "./SearchRefinements";
 
 const AdvocateSearch: React.FC = () => {
   const [query, setQuery] = useState<string>("");
@@ -39,25 +39,15 @@ const AdvocateSearch: React.FC = () => {
       <h2 className="text-[#1d4339] font-bold text-xl">
         Find Your Patient Advocate Today
       </h2>
-      <div className="flex flex-col gap-y-4">
-        <input
-          type="text"
-          placeholder="Search..."
-          className="border border-gray-300 p-2 rounded w-full"
-          value={query}
-          onChange={handleSearch}
-        />
-        <Filters
-          advocateResults={advocateData}
-          handleFilter={handleFilter}
-          filterValue={filterValue}
-        />
-        <Sort handleSort={handleSort} />
-      </div>
-      <SearchResults
-        advocateResults={advocateData}
-       
+      <Refinements
+        handleFilter={handleFilter}
+        handleSearch={handleSearch}
+        query={query}
+        handleSort={handleSort}
+        filterValue={filterValue}
+        advocateData={advocateData}
       />
+      <SearchResults advocateResults={advocateData} />
     </div>
   );
 };

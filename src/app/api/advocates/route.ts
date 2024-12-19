@@ -3,6 +3,18 @@ import db from "../../../db";
 import * as schema from "../../../db/schema";
 import {  asc, desc, ilike, or, sql } from "drizzle-orm";
 
+interface Advocate {
+  id: string;
+  firstName: string | null;
+  lastName: string | null;
+  city: string | null;
+  degree: string | null;
+  specialties: string[];
+  yearsOfExperience: number | null;
+  phoneNumber: number;
+  createdAt: Date;
+}
+
 export async function GET(request: Request) {
 
   // Parse the query parameters
@@ -25,6 +37,7 @@ export async function GET(request: Request) {
         ilike(schema.advocates.firstName, `%${searchTerm}%`),
         ilike(schema.advocates.lastName, `%${searchTerm}%`),
         ilike(schema.advocates.degree, `%${searchTerm}%`),
+        ilike(schema.advocates.city, `%${searchTerm}%`),
       ),  
     );
   }
@@ -43,16 +56,11 @@ export async function GET(request: Request) {
   // TODO: In the alloted time, I was unable to successfully write a query for the jsonb specialties field. I opted to filter after the fact on this iteration.
   // Right now we only support filtering by specialty
   if (filterField === "specialty" && filterValue) {
-    const filteredData = data?.filter(x=>x.specialties.some(y=>y === filterValue)) ?? []
+    const filteredData = data?.filter((x: Advocate)=>x.specialties.some((specialty)=>specialty === filterValue)) ?? []
 
       return Response.json({ data: filteredData });
 
-    // finalQuery.where(
-    //   sql`
-    //  ${schema.advocates.specialties.name}::jsonb @> ${JSON.stringify(
-    //     filterValue
-    //   )}::jsonb`
-    // );
+    // finalQuery.where(sql`${schema.advocates.specialties}::jsonb @> ${filterValue}`);
   }
 
   return Response.json({ data });

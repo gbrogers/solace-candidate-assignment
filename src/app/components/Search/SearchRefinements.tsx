@@ -71,4 +71,38 @@ const Filters: React.FC<{
   );
 };
 
-export { Filters, Sort };
+const Refinements: React.FC<{
+  advocateData: UseQueryResult<Advocate[], Error>;
+  handleSearch: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  query: string;
+  handleSort: (column: string) => void;
+  handleFilter: (value: string) => void;
+  filterValue: string | null
+}> = ({
+  advocateData,
+  handleSearch,
+  handleSort,
+  filterValue,
+  handleFilter,
+  query,
+}) => {
+  return (
+    <div className="flex flex-col gap-y-4">
+      <input
+        type="text"
+        placeholder="Search..."
+        className="border border-gray-300 p-2 rounded w-full"
+        value={query}
+        onChange={handleSearch}
+      />
+      <Filters
+        advocateResults={advocateData}
+        handleFilter={handleFilter}
+        filterValue={filterValue}
+      />
+      <Sort handleSort={handleSort} />
+    </div>
+  );
+};
+
+export { Refinements };
